@@ -1,0 +1,10 @@
+{
+  "name":"Respira",
+  "short_name":"Respira",
+  "start_url":".",
+  "display":"standalone",
+  "background_color":"#f5f8fb",
+  "theme_color":"#f5f8fb",
+  "lang":"pt-BR",
+  "description":"Um pequeno espaço para perceber como você está."
+}
