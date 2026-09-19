@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f8fb">
+<meta name="description" content="Respira — um pequeno espaço para perceber como você está.">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Respira</title>
+<style>
+:root{--ink:#19324d;--muted:#687788;--bg:#f5f8fb;--card:#fff;--line:#dfe7ee;--accent:#1f537d;--soft:#eaf2f8}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+button,input,textarea{font:inherit}button{cursor:pointer}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:82px}
+header{padding:24px 22px 12px;display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:800;font-size:22px}.small{font-size:13px;color:var(--muted)}
+main{padding:10px 20px}.screen{display:none}.screen.active{display:block}
+.hero{margin-top:28px;background:linear-gradient(160deg,#fff,#edf5fa);border:1px solid var(--line);border-radius:28px;padding:34px 25px;box-shadow:0 10px 30px #17324d12}
+h1{font-size:42px;line-height:1;margin:0 0 14px}.hero p{font-size:17px;line-height:1.55;color:var(--muted)}
+.primary{width:100%;border:0;border-radius:16px;padding:16px 18px;background:var(--accent);color:white;font-weight:750;margin-top:18px}
+.secondary{width:100%;border:1px solid var(--line);border-radius:15px;padding:14px;background:white;color:var(--ink);font-weight:650;margin-top:10px}
+.section-title{font-size:25px;margin:18px 0 6px}.sub{color:var(--muted);line-height:1.45;margin-top:0}
+.moods{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.mood{background:white;border:1px solid var(--line);border-radius:16px;padding:17px;text-align:left;min-height:74px;color:var(--ink);font-weight:700}.mood span{display:block;font-size:25px;margin-bottom:5px}
+textarea{width:100%;min-height:130px;border:1px solid var(--line);border-radius:16px;padding:15px;background:white;resize:vertical;outline:none;margin-top:14px}
+.choice{display:flex;gap:12px;align-items:flex-start;background:white;border:1px solid var(--line);border-radius:18px;padding:17px;margin:10px 0;text-align:left;width:100%;color:var(--ink)}
+.choice .ico{font-size:25px}.choice strong{display:block}.choice small{display:block;color:var(--muted);margin-top:4px;line-height:1.35}
+.card{background:white;border:1px solid var(--line);border-radius:20px;padding:20px;margin:14px 0}
+.quote{font-size:20px;line-height:1.5}.breath{text-align:center}.orb{width:150px;height:150px;border-radius:50%;margin:30px auto 20px;background:var(--soft);display:grid;place-items:center;font-size:22px;font-weight:800;animation:breathe 8s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(.82)}50%{transform:scale(1.08)}}
+.history-item{padding:14px 0;border-bottom:1px solid var(--line)}.history-item:last-child{border-bottom:0}.tag{display:inline-block;background:var(--soft);padding:6px 10px;border-radius:99px;font-size:13px;font-weight:700}.empty{text-align:center;color:var(--muted);padding:35px 10px}
+nav{position:fixed;bottom:0;left:0;right:0;background:#ffffffee;backdrop-filter:blur(12px);border-top:1px solid var(--line);z-index:5}
+.navin{max-width:520px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
+.navbtn{border:0;background:transparent;color:var(--muted);padding:8px;font-size:12px}.navbtn.active{color:var(--accent);font-weight:800}.navbtn div{font-size:20px}
+.back{border:0;background:transparent;color:var(--muted);font-size:15px;padding:0}
+.notice{background:#fff7ed;border:1px solid #f0d3ae;border-radius:16px;padding:15px;color:#714b22;line-height:1.45}
+.crisis{background:#fff;border:1px solid #e7caca;border-radius:20px;padding:20px}.crisis h3{margin-top:0}
+@media(max-width:380px){h1{font-size:36px}.hero{padding:28px 20px}}
+
+/* Respira final — welcome / spiritual / crisis polish */
+.hero { text-align:center; padding: 18px 8px 10px; }
+.brand-mark { width:64px; height:64px; margin:0 auto 12px; border-radius:22px; display:grid; place-items:center; font-size:30px; background:rgba(115,145,116,.12); }
+.hero h1 { font-size:42px; letter-spacing:-1.5px; margin:0; }
+.tagline { max-width:330px; margin:10px auto 4px; line-height:1.5; }
+.micro { margin:0; font-size:13px; opacity:.62; }
+.verse-card { margin-top:18px; text-align:center; }
+.eyebrow { font-size:12px; letter-spacing:.04em; opacity:.68; text-transform:uppercase; margin-bottom:10px; }
+.verse-card blockquote { margin:0; font-size:19px; line-height:1.5; font-weight:600; }
+.verse-ref { margin-top:9px; font-size:13px; opacity:.65; }
+.check-card { margin-top:14px; }
+.check-card h2 { margin-bottom:7px; }
+.check-card p { margin-top:0; }
+.check-card .primary { width:100%; margin-top:10px; }
+.quick-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.quick { border:0; text-align:left; padding:15px; border-radius:18px; background:var(--card,#fff); box-shadow:0 6px 22px rgba(0,0,0,.05); color:inherit; }
+.quick span { font-size:22px; display:block; margin-bottom:8px; }
+.quick b { display:block; font-size:14px; }
+.quick small { opacity:.55; }
+.signature { text-align:center; font-size:12px; opacity:.52; margin:20px 10px 8px; }
+.screen-head { display:flex; gap:12px; align-items:center; margin-bottom:18px; }
+.screen-head h2 { margin:0; }
+.back { border:0; background:var(--card,#fff); border-radius:12px; width:40px; height:40px; font-size:22px; }
+.calm-crisis { text-align:center; padding:24px; }
+.crisis-icon { font-size:36px; margin-bottom:10px; }
+.cvv-box { margin:20px 0; padding:20px; border-radius:20px; background:rgba(115,145,116,.09); }
+.cvv-box strong,.cvv-box span { display:block; }
+.cvv-box span { margin:7px 0 15px; font-size:14px; opacity:.7; }
+.cvv-box .primary { display:block; text-decoration:none; text-align:center; }
+@media (max-width:380px){ .hero h1{font-size:36px}.quick{padding:12px}.verse-card blockquote{font-size:17px} }
+
+
+.topbar{padding:18px 22px 0;display:flex;justify-content:space-between;align-items:flex-start}
+.menu-btn{border:0;background:transparent;font-size:28px;line-height:1;color:#27465a;padding:0;width:38px;height:38px}
+.top-micro{font-size:13px;line-height:1.35;text-align:right;color:#526a78;margin-top:3px}
+.home-scene{position:relative;min-height:600px;margin:0 -20px;padding:42px 22px 18px;overflow:hidden;background:linear-gradient(180deg,rgba(255,250,245,.97) 0%,rgba(255,247,237,.78) 35%,rgba(223,235,239,.35) 65%,rgba(245,248,251,.98) 100%);border-radius:0 0 34px 34px}
+.home-scene:before{content:"";position:absolute;inset:210px 0 0;background:
+  radial-gradient(ellipse at 20% 82%,#8aa6a5 0 17%,transparent 18%),
+  radial-gradient(ellipse at 78% 76%,#758d99 0 22%,transparent 23%),
+  linear-gradient(160deg,transparent 0 48%,rgba(123,148,154,.8) 49% 57%,transparent 58%),
+  linear-gradient(180deg,#e8d7c2 0%,#d9c9bb 22%,#8da2aa 54%,#dfe9e9 55%,#eef3f2 100%);
+  opacity:.72;filter:blur(.2px)}
+.home-scene:after{content:"";position:absolute;left:-10%;right:-10%;bottom:0;height:34%;background:radial-gradient(ellipse at 50% 80%,rgba(241,246,246,.9),rgba(241,246,246,0) 65%);pointer-events:none}
+.home-brand,.hand-note,.bible-side,.home-check{position:relative;z-index:1}
+.home-brand{text-align:center}
+.leaf-logo{font-size:42px;height:54px;display:flex;justify-content:center;align-items:center;filter:saturate(.7)}
+.home-brand h1{font-family:Georgia,serif;font-size:48px;letter-spacing:-1.8px;color:#173b55;margin:0 0 10px}
+.home-brand p{margin:0;color:#405e70;font-size:18px;line-height:1.3}
+.hand-note{font-family:"Segoe Print","Bradley Hand",cursive;font-size:25px;line-height:1.22;color:#31556c;margin:42px 0 70px 6px;transform:rotate(-2deg)}
+.hand-note span{font-size:27px}
+.bible-side{position:absolute;right:18px;top:400px;text-align:right;font-size:10px;letter-spacing:.11em;line-height:1.55;color:#526977}
+.bible-side small{font-size:8px;letter-spacing:.08em}
+.home-check{max-width:370px;margin:0 auto;background:rgba(255,255,255,.91);border:1px solid rgba(255,255,255,.9);box-shadow:0 14px 35px rgba(35,63,75,.13);border-radius:25px;padding:20px 18px;text-align:center;backdrop-filter:blur(6px)}
+.home-check h2{font-family:Georgia,serif;font-size:25px;margin:0 0 8px;color:#183b54}
+.home-check p{margin:0;color:#617584;font-size:14px;line-height:1.45}
+.home-check .primary{background:#6f9f8b;border-radius:30px;margin-top:13px;font-size:20px;padding:14px}
+.home-check .primary span{font-size:25px;margin-left:8px}
+.quick-grid.six{grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.quick{min-height:116px;border:0;text-align:center;padding:13px 7px;border-radius:20px;box-shadow:0 7px 20px rgba(31,57,69,.06)}
+.quick span{font-size:25px;margin-bottom:6px}
+.quick b{font-size:13px;line-height:1.12}
+.quick small{font-size:11px;margin-top:5px;display:block;line-height:1.1}
+.q-green{background:#e8f3ed}.q-blue{background:#e8f1f8}.q-lilac{background:#eeeaf8}.q-yellow{background:#faf1df}.q-cyan{background:#e4f3f3}.q-pink{background:#fae9e7}
+.support-card{width:100%;border:0;margin-top:14px;border-radius:20px;padding:16px 18px;background:#edf5ed;display:flex;align-items:center;gap:14px;text-align:left;color:#234b4a;box-shadow:0 7px 20px rgba(31,57,69,.05)}
+.support-heart{font-size:31px;color:#6d9e8d}
+.support-card span:nth-child(2){flex:1}.support-card b,.support-card small{display:block}.support-card b{font-size:14px}.support-card small{font-size:12px;margin-top:4px;opacity:.72}.support-card>strong{font-size:27px;font-weight:400;opacity:.65}
+.signature{font-size:11px;letter-spacing:.22em;color:#80909a;margin:20px 0 10px}
+@media(max-width:380px){.home-scene{min-height:575px;padding-top:34px}.home-brand h1{font-size:42px}.home-brand p{font-size:16px}.hand-note{font-size:21px;margin-bottom:65px}.bible-side{top:385px}.quick-grid.six{gap:7px}.quick{min-height:108px;padding:10px 4px}.quick b{font-size:12px}.quick small{font-size:10px}}
+
+
+.q-verse{background:#f3eee5}
+.verse-page{text-align:center;padding:32px 22px}
+.verse-big{font-size:42px;margin-bottom:15px}
+.verse-page blockquote{font-family:Georgia,serif;font-size:24px;line-height:1.5;margin:0;color:#183b54}
+.verse-page .verse-ref{font-size:14px;margin-top:12px}
+.verse-page p{margin-top:24px;font-size:14px;line-height:1.5;opacity:.68}
+@media(max-width:380px){.verse-page blockquote{font-size:21px}}
+
+
+.verse-category{display:inline-block;margin-bottom:13px;padding:6px 11px;border-radius:999px;background:rgba(115,145,116,.10);font-size:11px;letter-spacing:.04em;text-transform:uppercase;opacity:.75}
+
+
+.verse-library-btn{width:100%;display:flex;align-items:center;gap:13px;margin-top:12px;padding:15px 16px;border:0;border-radius:20px;background:#f3eee5;color:#27485b;text-align:left;box-shadow:0 7px 20px rgba(31,57,69,.05)}
+.verse-library-btn>span:first-child{font-size:25px}.verse-library-btn>span:nth-child(2){flex:1}.verse-library-btn b,.verse-library-btn small{display:block}.verse-library-btn b{font-size:14px}.verse-library-btn small{font-size:11px;margin-top:4px;opacity:.65}.verse-library-btn>strong{font-size:25px;font-weight:400;opacity:.55}
+.library-intro{font-size:14px;line-height:1.5;opacity:.7;margin-top:-5px}
+.verse-categories{display:flex;gap:7px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none}
+.verse-categories::-webkit-scrollbar{display:none}
+.cat-btn{white-space:nowrap;border:1px solid rgba(50,80,95,.12);background:#fff;border-radius:999px;padding:9px 12px;font-size:11px;color:#36566a}
+.cat-btn.selected{background:#6f9f8b;color:#fff;border-color:#6f9f8b}
+.verse-list{display:grid;gap:10px}
+.verse-item{background:#fff;border-radius:19px;padding:17px;box-shadow:0 6px 18px rgba(31,57,69,.05);border:1px solid rgba(50,80,95,.06)}
+.verse-item-cat{font-size:10px;text-transform:uppercase;letter-spacing:.05em;opacity:.55;margin-bottom:7px}
+.verse-item blockquote{font-family:Georgia,serif;font-size:16px;line-height:1.45;margin:0;color:#24465b}
+.verse-item-ref{font-size:12px;font-weight:600;margin-top:9px;opacity:.62}
+
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <button class="menu-btn" aria-label="Menu" onclick="show('about')">☰</button>
+  <div></div>
+  <div class="top-micro">“Um dia<br>de cada vez.”</div>
+</header>
+<main>
+
+<section id="home" class="screen active">
+  <div class="home-scene">
+    <div class="home-brand">
+      <div class="leaf-logo">🌿</div>
+      <h1>Respira</h1>
+      <p>Um pequeno espaço para você<br>parar, respirar e se ouvir.</p>
+    </div>
+
+    <div class="hand-note">Você não precisa<br>resolver tudo agora.<br><span>Apenas respire.</span></div>
+    <div class="bible-side">“EM TUDO<br>HÁ UM TEMPO.”<br><small>ECLESIASTES 3:1</small></div>
+
+    <div class="home-check card">
+      <h2>Como você está hoje?</h2>
+      <p>Não precisa explicar tudo.<br>Comece apenas dizendo como está.</p>
+      <button class="primary" onclick="show('checkin')">Começar <span>→</span></button>
+    </div>
+  </div>
+
+  <div class="quick-grid six">
+    <button class="quick q-green" onclick="show('checkin')"><span>🙂</span><b>Check-in<br>emocional</b><small>Como você está?</small></button>
+    <button class="quick q-blue" onclick="show('vent')"><span>💬</span><b>Quero<br>desabafar</b><small>Fale livremente</small></button>
+    <button class="quick q-lilac" onclick="show('understand')"><span>🧠</span><b>Quero entender<br>o que sinto</b><small>Reflexões e clareza</small></button>
+    <button class="quick q-yellow" onclick="show('word')"><span>🌱</span><b>Uma palavra<br>para hoje</b><small>Esperança diária</small></button>
+    <button class="quick q-cyan" onclick="show('breath')"><span>🫁</span><b>Respirar<br>por 1 minuto</b><small>Exercício guiado</small></button>
+    <button class="quick q-pink" onclick="show('history');renderHistory()"><span>🗓️</span><b>Meu histórico</b><small>Acompanhe sua jornada</small></button>
+    <button class="quick q-verse" onclick="show('verse')"><span>📖</span><b>Versículo<br>do dia</b><small>Uma palavra de fé</small></button>
+  </div>
+
+  <button class="verse-library-btn" onclick="show('verseLibrary')">
+    <span>📚</span>
+    <span><b>Explorar os 50 versículos</b><small>Palavras de fé para diferentes momentos</small></span>
+    <strong>›</strong>
+  </button>
+
+  <button class="support-card" onclick="show('crisis')">
+    <span class="support-heart">♥</span>
+    <span><b>Precisa de alguém para conversar?</b><small>Você não precisa enfrentar tudo sozinho.</small></span>
+    <strong>›</strong>
+  </button>
+
+  <p class="signature">R e s p i r a &nbsp;&nbsp; — &nbsp;&nbsp; Um dia de cada vez.</p>
+</section>
+
+<section id="checkin" class="screen">
+  <button class="back" onclick="show('home')">← Início</button>
+  <h2 class="section-title">Como você está agora?</h2>
+  <p class="sub">Não precisa explicar tudo. Escolha o que mais se aproxima do que você está sentindo.</p>
+  <div class="moods">
+    <button class="mood" onclick="selectMood('Bem','🙂')"><span>🙂</span>Bem</button>
+    <button class="mood" onclick="selectMood('Mais ou menos','😐')"><span>😐</span>Mais ou menos</button>
+    <button class="mood" onclick="selectMood('Triste','😔')"><span>😔</span>Triste</button>
+    <button class="mood" onclick="selectMood('Preocupado','😟')"><span>😟</span>Preocupado</button>
+    <button class="mood" onclick="selectMood('Irritado','😡')"><span>😡</span>Irritado</button>
+    <button class="mood" onclick="selectMood('Cansado','😴')"><span>😴</span>Cansado</button>
+    <button class="mood" onclick="selectMood('Confuso','💭')"><span>💭</span>Confuso</button>
+  </div>
+</section>
+
+<section id="help" class="screen">
+  <button class="back" onclick="show('checkin')">← Voltar</button>
+  <h2 class="section-title" id="helpTitle">Como posso te ajudar?</h2>
+  <p class="sub">Você escolheu <strong id="moodLabel"></strong>. Escolha o que precisa neste momento.</p>
+  <button class="choice" onclick="show('vent')"><span class="ico">🗣️</span><span><strong>Quero desabafar</strong><small>Coloque em palavras o que está acontecendo, sem precisar organizar tudo.</small></span></button>
+  <button class="choice" onclick="show('understand')"><span class="ico">🧠</span><span><strong>Quero entender o que sinto</strong><small>Uma pequena reflexão para ajudar você a observar o que está acontecendo por dentro.</small></span></button>
+  <button class="choice" onclick="show('word')"><span class="ico">🌱</span><span><strong>Quero uma palavra para hoje</strong><small>Uma mensagem curta para acompanhar o seu dia.</small></span></button>
+  <button class="choice" onclick="show('breath')"><span class="ico">🫁</span><span><strong>Quero respirar</strong><small>Um minuto para desacelerar.</small></span></button>
+</section>
+
+<section id="vent" class="screen">
+  <button class="back" onclick="show('help')">← Voltar</button>
+  <h2 class="section-title">Pode falar.</h2>
+  <p class="sub">Escreva do jeito que vier. Não precisa deixar bonito, certo ou organizado.</p>
+  <textarea id="ventText" placeholder="O que está acontecendo com você?"></textarea>
+  <button class="primary" onclick="saveVent()">Guardar este momento</button>
+  <div id="ventSaved"></div>
+</section>
+
+<section id="understand" class="screen">
+  <button class="back" onclick="show('help')">← Voltar</button>
+  <h2 class="section-title">Vamos olhar para isso.</h2>
+  <div class="card quote" id="reflection"></div>
+  <div class="card">
+    <strong>Experimente perguntar a si mesmo:</strong>
+    <p class="sub">“O que aconteceu antes de eu começar a me sentir assim?”</p>
+    <p class="sub">“O que eu estou precisando neste momento?”</p>
+  </div>
+  <button class="secondary" onclick="show('vent')">🗣️ Quero colocar em palavras</button>
+</section>
+
+<section id="word" class="screen">
+  <button class="back" onclick="show('help')">← Voltar</button>
+  <h2 class="section-title">Uma palavra para hoje.</h2>
+  <div class="card quote" id="wordText"></div>
+  <button class="primary" onclick="newWord()">🌱 Outra palavra</button>
+</section>
+
+<section id="breath" class="screen">
+  <button class="back" onclick="show('home')">← Início</button>
+  <h2 class="section-title">Um minuto para respirar.</h2>
+  <p class="sub">Não force a respiração. Apenas acompanhe o ritmo com conforto.</p>
+  <div class="card breath"><div class="orb" id="orb">Inspire</div><strong id="timer">60s</strong><p class="sub" id="breathText">Quando o círculo crescer, inspire. Quando diminuir, solte o ar.</p></div>
+  <button class="primary" id="breathBtn" onclick="startBreath()">Começar 1 minuto</button>
+</section>
+
+<section id="history" class="screen">
+  <h2 class="section-title">Seu histórico</h2>
+  <p class="sub">Seus registros ficam somente neste aparelho.</p>
+  <div class="card" id="historyList"></div>
+  <button class="secondary" onclick="clearHistory()">Apagar histórico deste aparelho</button>
+</section>
+
+<section id="verseLibrary" class="screen">
+  <div class="screen-head">
+    <button class="back" onclick="show('home')">←</button>
+    <div><div class="eyebrow">Biblioteca</div><h2>50 versículos</h2></div>
+  </div>
+  <p class="library-intro">Escolha uma categoria para encontrar uma palavra de fé para o momento que você está vivendo.</p>
+  <div id="verseCategories" class="verse-categories"></div>
+  <div id="verseList" class="verse-list"></div>
+</section>
+
+<section id="verse" class="screen">
+  <div class="screen-head">
+    <button class="back" onclick="show('home')">←</button>
+    <div><div class="eyebrow">Palavra de hoje</div><h2>Versículo do dia</h2></div>
+  </div>
+  <div class="card verse-page">
+    <div class="verse-big">📖</div>
+    <div class="verse-category" id="verseCategory">Esperança</div>
+    <blockquote id="versePageText">“Aquietai-vos e sabei que eu sou Deus.”</blockquote>
+    <div class="verse-ref" id="versePageRef">Salmos 46:10</div>
+    <p>Uma palavra para guardar no coração e levar com você ao longo do dia.</p>
+  </div>
+</section>
+
+<section id="crisis" class="screen">
+  <div class="screen-head">
+    <button class="back" onclick="show('home')">←</button>
+    <div><div class="eyebrow">Apoio</div><h2>Precisa de alguém para conversar?</h2></div>
+  </div>
+  <div class="crisis calm-crisis">
+    <div class="crisis-icon">💛</div>
+    <h3>Você não precisa passar por isso sozinho.</h3>
+    <p>Se estiver pensando em se machucar, em tirar a própria vida, ou simplesmente precisar conversar com alguém, procure ajuda.</p>
+    <div class="cvv-box">
+      <strong>CVV — Centro de Valorização da Vida</strong>
+      <span>Apoio emocional gratuito, sigiloso e 24 horas.</span>
+      <a class="primary" href="tel:188">📞 Ligar para 188</a>
+    </div>
+    <p class="small">Se houver risco imediato, procure ajuda presencial ou um serviço de emergência da sua região.</p>
+  </div>
+</section>
+
+<section id="about" class="screen">
+  <h2 class="section-title">Sobre o Respira</h2>
+  <div class="card"><p class="sub">O Respira é um espaço simples de autocuidado e reflexão. Ele não substitui psicólogo, médico ou serviço de emergência.</p></div>
+  <div class="card"><strong>🔒 Privacidade</strong><p class="sub">Os registros desta versão são armazenados localmente no navegador do aparelho. Não há conta nem sincronização.</p></div>
+  <div class="crisis"><h3>💛 Precisa conversar?</h3><p>Você não precisa enfrentar tudo sozinho.</p><button class="secondary" onclick="show('crisis')">Conhecer as opções de apoio</button></div>
+</section>
+
+</main>
+<nav><div class="navin">
+<button class="navbtn active" data-s="home" onclick="show('home')"><div>⌂</div>Hoje</button>
+<button class="navbtn" data-s="history" onclick="show('history');renderHistory()"><div>🗓️</div>Histórico</button>
+<button class="navbtn" data-s="about" onclick="show('about')"><div>ⓘ</div>Sobre</button>
+</div></nav>
+</div>
+
+<script>
+const KEY='respira_final_history'; let mood={name:'',emoji:''}; let breathTimer=null; let words=['Você não precisa resolver tudo hoje. Dê um passo de cada vez.','O que você sente merece ser percebido, não escondido.','Há dias em que continuar já é uma forma de coragem.','Respire. Este momento não precisa definir o seu dia.','Seja gentil consigo enquanto atravessa o que está vivendo.']; let wordIndex=0;
+function $(id){return document.getElementById(id)}
+function show(id){
+ document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active')); $(id).classList.add('active');
+ document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.s===id));
+ if(id==='understand') $('reflection').textContent=reflection();
+ if(id==='word') newWord();
+ if(id==='verseLibrary' && typeof window.renderVerseLibrary==='function') window.renderVerseLibrary();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function selectMood(name,emoji){mood={name,emoji};$('moodLabel').textContent=emoji+' '+name;show('help');}
+function reflection(){
+ const r={Bem:'Perceba o que está funcionando hoje e permita-se aproveitar isso sem culpa.', 'Mais ou menos':'Talvez você não precise escolher entre estar bem e estar mal. Observe o que está pedindo atenção.', Triste:'A tristeza pode sinalizar que algo importante foi tocado. Dê espaço ao que sente, sem se julgar.', Preocupado:'Quando a mente tenta resolver tudo de uma vez, o corpo sente. Volte ao que está ao seu alcance agora.', Irritado:'Antes de agir, crie um pequeno espaço entre o que aconteceu e sua resposta. Esse espaço pode mudar muita coisa.', Cansado:'Seu corpo também fala. Talvez hoje seja necessário diminuir o ritmo e reconhecer seus limites.', Confuso:'Você não precisa ter todas as respostas para começar. Às vezes, perceber já é o primeiro passo.'}; return r[mood.name]||'Pare por um instante e perceba o que está acontecendo dentro de você.';
+}
+function getHistory(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return[]}}
+function saveEntry(text=''){let h=getHistory();h.unshift({date:new Date().toISOString(),mood, text});localStorage.setItem(KEY,JSON.stringify(h.slice(0,100)));renderHistory()}
+function saveVent(){let t=$('ventText').value.trim();if(!t){$('ventSaved').innerHTML='<p class="notice">Escreva alguma coisa primeiro. Pode ser apenas uma frase.</p>';return}saveEntry(t);$('ventSaved').innerHTML='<p class="notice">Este momento foi guardado no seu histórico. Você pode voltar quando quiser.</p>'; $('ventText').value='';}
+function renderHistory(){let h=getHistory();if(!h.length){$('historyList').innerHTML='<div class="empty">Ainda não há registros.<br>Seu primeiro check-in aparecerá aqui.</div>';return} $('historyList').innerHTML=h.map(x=>`<div class="history-item"><span class="tag">${x.mood.emoji} ${x.mood.name}</span><div class="small">${new Date(x.date).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}</div>${x.text?`<p class="sub">${escapeHtml(x.text)}</p>`:''}</div>`).join('')}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function clearHistory(){if(confirm('Apagar todo o histórico deste aparelho?')){localStorage.removeItem(KEY);renderHistory()}}
+function newWord(){$('wordText').textContent=words[wordIndex++%words.length]}
+function startBreath(){if(breathTimer)return;let sec=60;$('breathBtn').disabled=true;$('breathBtn').textContent='Respirando…';$('timer').textContent='60s'; breathTimer=setInterval(()=>{sec--; $('timer').textContent=sec+'s'; if(sec<=30){$('orb').textContent='Solte o ar'}else{$('orb').textContent='Inspire'} if(sec<=0){clearInterval(breathTimer);breathTimer=null;$('orb').textContent='Concluído';$('breathText').textContent='Muito bem. Perceba como você está agora.';$('breathBtn').disabled=false;$('breathBtn').textContent='Recomeçar';}},1000)}
+renderHistory();
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+
+<script>
+(function(){
+  const verses = [["Ansiedade e preocupação", "“Não andeis ansiosos por coisa alguma.”", "Filipenses 4:6"], ["Ansiedade e preocupação", "“Lançando sobre ele toda a vossa ansiedade.”", "1 Pedro 5:7"], ["Ansiedade e preocupação", "“No dia em que eu temer, hei de confiar em ti.”", "Salmos 56:3"], ["Ansiedade e preocupação", "“Tu conservarás em paz aquele cuja mente está firme em ti.”", "Isaías 26:3"], ["Ansiedade e preocupação", "“Entrega o teu caminho ao Senhor; confia nele.”", "Salmos 37:5"], ["Tristeza e coração ferido", "“Perto está o Senhor dos que têm o coração quebrantado.”", "Salmos 34:18"], ["Tristeza e coração ferido", "“Ele sara os quebrantados de coração e lhes ata as feridas.”", "Salmos 147:3"], ["Tristeza e coração ferido", "“O choro pode durar uma noite, mas a alegria vem pela manhã.”", "Salmos 30:5"], ["Tristeza e coração ferido", "“Bem-aventurados os que choram, porque serão consolados.”", "Mateus 5:4"], ["Tristeza e coração ferido", "“As minhas lágrimas estão no teu odre.”", "Salmos 56:8"], ["Irritação e raiva", "“A resposta branda desvia o furor.”", "Provérbios 15:1"], ["Irritação e raiva", "“Todo homem seja pronto para ouvir, tardio para falar, tardio para se irar.”", "Tiago 1:19"], ["Irritação e raiva", "“Irai-vos e não pequeis.”", "Efésios 4:26"], ["Irritação e raiva", "“Melhor é o longânimo do que o valente.”", "Provérbios 16:32"], ["Irritação e raiva", "“O amor é paciente, é benigno.”", "1 Coríntios 13:4"], ["Cansaço e sobrecarga", "“Vinde a mim, todos os que estais cansados e sobrecarregados.”", "Mateus 11:28"], ["Cansaço e sobrecarga", "“Ele dá força ao cansado e multiplica as forças ao que não tem nenhum vigor.”", "Isaías 40:29"], ["Cansaço e sobrecarga", "“Os que esperam no Senhor renovarão as suas forças.”", "Isaías 40:31"], ["Cansaço e sobrecarga", "“Em paz me deitarei e dormirei, porque só tu, Senhor, me fazes repousar seguro.”", "Salmos 4:8"], ["Cansaço e sobrecarga", "“A minha graça te basta.”", "2 Coríntios 12:9"], ["Medo e insegurança", "“Não temas, porque eu sou contigo.”", "Isaías 41:10"], ["Medo e insegurança", "“O Senhor é a minha luz e a minha salvação; a quem temerei?”", "Salmos 27:1"], ["Medo e insegurança", "“Deus não nos deu espírito de temor, mas de poder, amor e moderação.”", "2 Timóteo 1:7"], ["Medo e insegurança", "“Ainda que eu andasse pelo vale da sombra da morte, não temeria mal algum.”", "Salmos 23:4"], ["Medo e insegurança", "“Quando passares pelas águas, estarei contigo.”", "Isaías 43:2"], ["Solidão e rejeição", "“De maneira alguma te deixarei, nunca jamais te abandonarei.”", "Hebreus 13:5"], ["Solidão e rejeição", "“Ainda que meu pai e minha mãe me desamparem, o Senhor me acolherá.”", "Salmos 27:10"], ["Solidão e rejeição", "“Eu estou convosco todos os dias.”", "Mateus 28:20"], ["Solidão e rejeição", "“O Senhor está perto de todos os que o invocam.”", "Salmos 145:18"], ["Solidão e rejeição", "“Porque eu, o Senhor teu Deus, te tomo pela tua mão direita.”", "Isaías 41:13"], ["Esperança e recomeço", "“As misericórdias do Senhor são a causa de não sermos consumidos.”", "Lamentações 3:22"], ["Esperança e recomeço", "“Novas são cada manhã; grande é a tua fidelidade.”", "Lamentações 3:23"], ["Esperança e recomeço", "“Eis que faço novas todas as coisas.”", "Apocalipse 21:5"], ["Esperança e recomeço", "“Aquele que está em Cristo é nova criatura.”", "2 Coríntios 5:17"], ["Esperança e recomeço", "“O Senhor firma os passos do homem.”", "Salmos 37:23"], ["Coragem e força", "“Sê forte e corajoso; não temas.”", "Josué 1:9"], ["Coragem e força", "“Tudo posso naquele que me fortalece.”", "Filipenses 4:13"], ["Coragem e força", "“O Senhor é a minha força e o meu escudo.”", "Salmos 28:7"], ["Coragem e força", "“Deus é o nosso refúgio e fortaleza.”", "Salmos 46:1"], ["Coragem e força", "“O Senhor é a força do seu povo.”", "Salmos 28:8"], ["Paz e descanso", "“Aquietai-vos e sabei que eu sou Deus.”", "Salmos 46:10"], ["Paz e descanso", "“Deixo-vos a paz, a minha paz vos dou.”", "João 14:27"], ["Paz e descanso", "“Em paz me deitarei e dormirei.”", "Salmos 4:8"], ["Paz e descanso", "“Tu, Senhor, nos darás a paz.”", "Isaías 26:12"], ["Paz e descanso", "“E a paz de Deus guardará o vosso coração e a vossa mente.”", "Filipenses 4:7"], ["Fé, confiança e propósito", "“Confia no Senhor de todo o teu coração.”", "Provérbios 3:5"], ["Fé, confiança e propósito", "“Entrega as tuas obras ao Senhor.”", "Provérbios 16:3"], ["Fé, confiança e propósito", "“Sabemos que todas as coisas cooperam para o bem.”", "Romanos 8:28"], ["Fé, confiança e propósito", "“Eu é que sei que pensamentos tenho a vosso respeito... pensamentos de paz.”", "Jeremias 29:11"], ["Fé, confiança e propósito", "“Tudo tem o seu tempo determinado.”", "Eclesiastes 3:1"]];
+  const i = new Date().getDate() % verses.length;
+  const v = verses[i];
+  const q = document.getElementById('dailyVerse'), r = document.getElementById('dailyVerseRef');
+  if(q && r){ q.textContent=v[1]; r.textContent=v[2]; }
+  const pq = document.getElementById('versePageText'), pr = document.getElementById('versePageRef');
+  if(pq && pr){ pq.textContent=v[1]; pr.textContent=v[2]; const pc=document.getElementById('verseCategory'); if(pc) pc.textContent=v[0]; }
+})();
+</script>
+
+
+<script>
+(function(){
+  function renderVerseLibrary(category){
+    if(typeof verses === 'undefined') return;
+    const cats = [...new Set(verses.map(v=>v[0]))];
+    const catWrap = document.getElementById('verseCategories');
+    const list = document.getElementById('verseList');
+    if(!catWrap || !list) return;
+    const selected = category || 'Todas';
+    catWrap.innerHTML = ['Todas',...cats].map(c =>
+      '<button class="cat-btn '+(c===selected?'selected':'')+'" data-cat="'+c.replace(/"/g,'&quot;')+'">'+(c==='Todas'?'📖 ':'')+c+'</button>'
+    ).join('');
+    catWrap.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => renderVerseLibrary(btn.dataset.cat));
+    });
+    const items = selected==='Todas' ? verses : verses.filter(v=>v[0]===selected);
+    list.innerHTML = items.map(v =>
+      '<article class="verse-item"><div class="verse-item-cat">'+v[0]+'</div><blockquote>'+v[1]+'</blockquote><div class="verse-item-ref">'+v[2]+'</div></article>'
+    ).join('');
+  }
+  window.renderVerseLibrary = renderVerseLibrary;
+})();
+</script>
+
+</body>
+</html>
